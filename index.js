@@ -11,6 +11,11 @@ module.exports = function(dir, iterator) {
   if (!dir) throw new Error('Missing dir')
   if (!iterator) throw new Error('Missing iterator')
 
+  if (!fs.existsSync(dir)) {
+    debug('invalid dir: `%s`', dir)
+    return null
+  }
+
   debug('walking dir: `%s`', dir)
 
   fs.readdirSync(dir).forEach(function(file) {

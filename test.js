@@ -1,10 +1,11 @@
 'use strict';
 
-var assert = require('assert')
+var info = require('./package.json')
+  , assert = require('assert')
   , ade = assert.deepEqual
   , path = require('path')
  
-describe('load-dir', function() {
+describe(info.name + ' v' + info.version, function() {
   var loadDir = require('./index')
     , dir = path.join(__dirname, '/test/')
 
@@ -50,5 +51,11 @@ describe('load-dir', function() {
     , e: 'e'
     , f: 'f'
     })
+  })
+
+  it('noexists', function() {
+    var txtDir = path.join(dir, '/noexists/')
+    var loaded = loadDir.fs(txtDir)
+    ade(loaded, null)
   })
 })
