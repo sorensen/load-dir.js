@@ -1,7 +1,8 @@
-var-type
+load-dir
 ========
 
-Get the native type of any variable using `Object.prototype.toString`
+Recursively iterate through a directory and apply an iterator to the filepath. 
+Includes shortcut methods for requiring or file reading.
 
 Install
 -------
@@ -9,7 +10,7 @@ Install
 With [npm](https://npmjs.org)
 
 ```
-npm install var-type
+npm install load-dir
 ```
 
 Usage
@@ -18,36 +19,23 @@ Usage
 Node.js
 
 ```js
-var varType = require('var-type')
+var loadDir = require('load-dir')
 
-console.log(varType('hello')) // String
+// Require all .js files
+var lib = loadDir(__dirname + '/lib/', function(fpath) {
+  if (!!~fpath.indexOf('.js')) return require(fpath)
+  return false
+})
 
-// The 2nd argument will be used as a comparison test if sent
-varType('foo', 'String') // true
+// Run require on all files, will break if non js files
+var lib = loadDir.require(__dirname + '/lib/')
+ 
+ // Load all .jade files 
+var templates = loadDir(__dirname + '/templates/', function(fpath) {
+  if (!!~fpath.indexOf('.jade')) return fs.readFileSync(fpath, 'utf8')
+  return false
+})
+
+// Load every file found
+var templates = loadDir.fs(__dirname + '/templates/')
 ```
-
-| Input                  | Output    |
-| ---------------------- |:---------:|
-| 'meow'                 | String    |
-| new String('bar')      | String    |
-| 20                     | Number    |
-| new Number(10)         | Number    |
-| NaN                    | Number    |
-| Infinity               | Number    |
-| true                   | Boolean   |
-| new Boolean()          | Boolean   |
-| /ab+c/                 | RegExp    |
-| new RegExp('ab+c')     | RegExp    |
-| [1,2,3]                | Array     |
-| new Array(4,5,6)       | Array     |
-| {a: 1}                 | Object    |
-| new Object()           | Object    |
-| function() {}          | Function  |
-| new Function('a', 'b') | Function  |
-| new Date()             | Date      |
-| new Error()            | Error     |
-| null                   | Null      |
-| undefined              | Undefined |
-
-
-See [tests](./test.js).
